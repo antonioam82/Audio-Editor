@@ -11,11 +11,16 @@ class editor():
 
         self.currentDir = StringVar()
         self.currentDir.set(os.getcwd())
+        self.audioName = StringVar()
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
+        Label(self.root,text="AUDIO TITLE").place(x=10,y=30)
+        self.entryName = Entry(self.root,textvariable=self.audioName,width=40,font=('arial 20'))
+        self.entryName.place(x=10,y=53)
 
         self.root.mainloop()
 
 
 if __name__=="__main__":
     editor()
+
