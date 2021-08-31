@@ -20,6 +20,7 @@ class editor():
         self.entryName.place(x=10,y=53)
         self.durationEntry = Entry(self.root,textvariable=self.duration,width=13,font=('arial 20')).place(x=690,y=53)
         Label(self.root,text="DURATION").place(x=690,y=30)
+        Button(self.root,text="SEARCH AUDIO FILE",width=85,height=2).place(x=10,y=100)
 
         self.root.mainloop()
 
