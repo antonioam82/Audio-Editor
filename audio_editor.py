@@ -31,6 +31,8 @@ class editor():
                      ("wav files","*.wav")))
         if audio_file != "":
             audio_f = (audio_file.split("/"))[-1]
+            name,self.ex = os.path.splitext(audio_f)
+            print(self.ex)
             self.audioName.set(audio_f)
         
 
