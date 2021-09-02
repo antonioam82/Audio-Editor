@@ -28,7 +28,8 @@ class editor():
     def open_file(self):
         self.audio_file = filedialog.askopenfilename(initialdir = "/",
                      title="Select audio",filetypes = (("mp3 files","*.mp3"),
-                     ("wav files","*.wav"),("ogg files","*.ogg")))
+                     ("wav files","*.wav"),("ogg files","*.ogg"),
+                     ("flv files","*.flv")))
         if self.audio_file != "":
             audio_f = (self.audio_file.split("/"))[-1]
             name,self.ex = os.path.splitext(audio_f)
@@ -43,10 +44,11 @@ class editor():
             self.audio = AudioSegment.from_wav(self.audio_file)
         elif self.ex == ".ogg":
             self.audio = AudioSegment.from_ogg(self.audio_file)
-        
-        
-
-
+        elif self.ex == ".flv":
+            self.audio = AudioSegment.from_flv(self.audio_file)
+        else:
+            self.audio = AudioSegment.from_file(self.audio_file)
+                                                     
 if __name__=="__main__":
     editor()
 
