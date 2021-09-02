@@ -13,7 +13,7 @@ class editor():
         self.currentDir = StringVar()
         self.currentDir.set(os.getcwd())
         self.audioName = StringVar()
-        self.duration = IntVar()
+        self.duration = StringVar()
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
         Label(self.root,text="AUDIO TITLE").place(x=10,y=30)
@@ -29,11 +29,10 @@ class editor():
         self.audio_file = filedialog.askopenfilename(initialdir = "/",
                      title="Select audio",filetypes = (("mp3 files","*.mp3"),
                      ("wav files","*.wav"),("ogg files","*.ogg"),
-                     ("flv files","*.flv")))
+                     ("flv files","*.flv"),("mp4 files","*.mp4")))
         if self.audio_file != "":
             audio_f = (self.audio_file.split("/"))[-1]
             name,self.ex = os.path.splitext(audio_f)
-            print(self.ex)
             self.audioName.set(audio_f)
             self.import_audio()
 
