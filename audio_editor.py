@@ -47,6 +47,7 @@ class editor():
             self.audio = AudioSegment.from_flv(self.audio_file)
         else:
             self.audio = AudioSegment.from_file(self.audio_file)
+        self.duration.set(self.audio.duration_seconds)
                                                      
 if __name__=="__main__":
     editor()
