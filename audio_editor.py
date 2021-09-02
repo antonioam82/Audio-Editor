@@ -26,14 +26,24 @@ class editor():
         self.root.mainloop()
 
     def open_file(self):
-        audio_file = filedialog.askopenfilename(initialdir = "/",
+        self.audio_file = filedialog.askopenfilename(initialdir = "/",
                      title="Select audio",filetypes = (("mp3 files","*.mp3"),
-                     ("wav files","*.wav")))
-        if audio_file != "":
-            audio_f = (audio_file.split("/"))[-1]
+                     ("wav files","*.wav"),("ogg files","*.ogg")))
+        if self.audio_file != "":
+            audio_f = (self.audio_file.split("/"))[-1]
             name,self.ex = os.path.splitext(audio_f)
             print(self.ex)
             self.audioName.set(audio_f)
+            self.import_audio()
+
+    def import_audio(self):
+        if self.ex == ".mp3":
+            self.audio = AudioSegment.from_mp3(self.audio_file)
+        elif self.ex == ".wav":
+            self.audio = AudioSegment.from_wav(self.audio_file)
+        elif self.ex == ".ogg":
+            self.audio = AudioSegment.from_ogg(self.audio_file)
+        
         
 
 
