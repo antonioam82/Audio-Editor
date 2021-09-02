@@ -19,8 +19,8 @@ class editor():
         Label(self.root,text="AUDIO TITLE").place(x=10,y=30)
         self.entryName = Entry(self.root,textvariable=self.audioName,width=40,font=('arial 20'))
         self.entryName.place(x=10,y=53)
-        self.durationEntry = Entry(self.root,textvariable=self.duration,width=13,font=('arial 20')).place(x=690,y=53)
-        Label(self.root,text="DURATION").place(x=690,y=30)
+        self.durationEntry = Entry(self.root,textvariable=self.duration,width=13,font=('arial 20'),bg="black",fg="red").place(x=690,y=53)
+        Label(self.root,text="DURATION(MINUTES)").place(x=690,y=30)
         Button(self.root,text="SEARCH AUDIO FILE",width=85,height=2,command=self.open_file).place(x=10,y=100)
 
         self.root.mainloop()
@@ -47,7 +47,7 @@ class editor():
             self.audio = AudioSegment.from_flv(self.audio_file)
         else:
             self.audio = AudioSegment.from_file(self.audio_file)
-        self.duration.set(self.audio.duration_seconds)
+        self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
                                                      
 if __name__=="__main__":
     editor()
