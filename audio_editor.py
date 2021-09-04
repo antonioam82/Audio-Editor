@@ -28,7 +28,8 @@ class editor():
         Button(self.root,text="EXPORT AS .OGG",width=15,height=2).place(x=797,y=115)
         Button(self.root,text="EXPORT AS .MP2",width=15,height=2).place(x=650,y=177)
         Button(self.root,text="EXPORT AS .MP4",width=15,height=2).place(x=797,y=177)
-
+        Button(self.root,text="EXPORT AS .AAC",width=15,height=2).place(x=650,y=239)
+        Button(self.root,text="EXPORT AS .AU",width=15,height=2).place(x=797,y=239)
         
         self.root.mainloop()
         
