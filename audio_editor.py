@@ -17,13 +17,21 @@ class editor():
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
         Label(self.root,text="AUDIO TITLE").place(x=10,y=30)
-        self.entryName = Entry(self.root,textvariable=self.audioName,width=40,font=('arial 20'))
+        self.entryName = Entry(self.root,textvariable=self.audioName,width=34,font=('arial 24'))
         self.entryName.place(x=10,y=53)
-        self.durationEntry = Entry(self.root,textvariable=self.duration,width=13,font=('arial 20'),bg="black",fg="red").place(x=690,y=53)
-        Label(self.root,text="DURATION(MINUTES)").place(x=690,y=30)
-        Button(self.root,text="SEARCH AUDIO FILE",width=85,height=2,command=self.open_file).place(x=10,y=100)
+        #self.durationEntry = Entry(self.root,textvariable=self.duration,width=13,font=('arial 20'),bg="black",fg="red").place(x=690,y=53)
+        #Label(self.root,text="DURATION(MINUTES)").place(x=690,y=30)
+        Button(self.root,text="SEARCH AUDIO FILE",width=86,height=2,command=self.open_file).place(x=12,y=100)
+        Button(self.root,text="EXPORT AS .WAV",width=15,height=2).place(x=650,y=53)
+        Button(self.root,text="EXPORT AS .MP3",width=15,height=2).place(x=797,y=53)
+        Button(self.root,text="EXPORT AS FLV.",width=15,height=2).place(x=650,y=115)
+        Button(self.root,text="EXPORT AS .OGG",width=15,height=2).place(x=797,y=115)
 
+
+
+        
         self.root.mainloop()
+        
 
     def open_file(self):
         self.audio_file = filedialog.askopenfilename(initialdir = "/",
