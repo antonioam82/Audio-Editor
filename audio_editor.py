@@ -26,8 +26,8 @@ class editor():
         Button(self.root,text="EXPORT AS .MP3",width=15,height=2).place(x=797,y=53)
         Button(self.root,text="EXPORT AS FLV.",width=15,height=2).place(x=650,y=115)
         Button(self.root,text="EXPORT AS .OGG",width=15,height=2).place(x=797,y=115)
-
-
+        Button(self.root,text="EXPORT AS .MP2",width=15,height=2).place(x=650,y=177)
+        Button(self.root,text="EXPORT AS .MP4",width=15,height=2).place(x=797,y=177)
 
         
         self.root.mainloop()
