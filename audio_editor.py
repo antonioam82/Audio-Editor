@@ -13,7 +13,7 @@ class editor():
         self.currentDir = StringVar()
         self.currentDir.set(os.getcwd())
         self.audioName = StringVar()
-        self.duration = StringVar()
+        #self.duration = StringVar()
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
         Label(self.root,text="AUDIO TITLE").place(x=10,y=30)
@@ -65,7 +65,7 @@ class editor():
             self.audio = AudioSegment.from_flv(self.audio_file)
         else:
             self.audio = AudioSegment.from_file(self.audio_file)
-        self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
+        #self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
                                                      
 if __name__=="__main__":
     editor()
