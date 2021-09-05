@@ -31,6 +31,8 @@ class editor():
         Button(self.root,text="EXPORT AS .MP3",width=15,height=2).place(x=650,y=115)#.place(x=650,y=239)
         Button(self.root,text="EXPORT AS .WAV",width=15,height=2).place(x=797,y=115)#.place(x=797,y=239)
         Button(self.root,text="CHANGE DIRECTORY",width=36,height=2).place(x=650,y=53)#.place(x=650,y=301)
+        Button(self.root,text="REVERSE AUDIO",width=35,height=2).place(x=12,y=177)
+        Button(self.root,text="PLAY AUDIO",width=35,height=2).place(x=12,y=239)
         
         self.root.mainloop()
         
