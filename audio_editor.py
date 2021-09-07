@@ -38,7 +38,10 @@ class editor():
         self.slider.set(1)
         self.slider.place(x=300,y=207)
         Label(self.root,text="SPEED UP").place(x=294,y=180)
-        
+        self.slider1 = Scale(self.root,length=130,bg="light gray",from_=500, to=1)
+        self.slider1.set(1)
+        self.slider1.place(x=360,y=207)
+        Label(self.root,text="VOLUME").place(x=356,y=180)        
         self.root.mainloop()
         
 
