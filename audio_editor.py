@@ -34,6 +34,10 @@ class editor():
         Button(self.root,text="REVERSE AUDIO",width=35,height=2).place(x=12,y=177)
         Button(self.root,text="METADATA",width=35,height=2).place(x=12,y=239)
         Button(self.root,text="PLAY AUDIO",width=35,height=2).place(x=12,y=301)
+        self.slider = Scale(self.root,length=130,bg="light gray",from_=500, to=1)
+        self.slider.set(1)
+        self.slider.place(x=300,y=207)
+        Label(self.root,text="SPEED UP").place(x=294,y=180)
         
         self.root.mainloop()
         
