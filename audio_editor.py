@@ -45,6 +45,13 @@ class editor():
         self.slider2 = Scale(self.root,length=130,bg="light gray",from_=100, to=-100)
         self.slider2.place(x=420,y=207)
         Label(self.root,text="GAIN").place(x=425,y=180)
+        self.slider3 = Scale(self.root,bg="light gray",length=130, from_=20, to=0)
+        self.slider3.place(x=480,y=207)
+        Label(self.root,text="FADE IN").place(x=473,y=180)
+        self.slider4 = Scale(self.root,bg="light gray",length=130, from_=20, to=0)
+        self.slider4.place(x=540,y=207)
+        Label(self.root,text="FADE OUT").place(x=530,y=180)
+
         self.root.mainloop()
 
         
