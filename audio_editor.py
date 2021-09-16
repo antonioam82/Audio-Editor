@@ -54,8 +54,6 @@ class editor():
 
         self.root.mainloop()
 
-        
-
     def open_file(self):
         self.audio_file = filedialog.askopenfilename(initialdir = "/",
                      title="Select audio",filetypes = (("mp3 files","*.mp3"),
