@@ -13,7 +13,7 @@ class editor():
         self.currentDir = StringVar()
         self.currentDir.set(os.getcwd())
         self.audioName = StringVar()
-        #self.duration = StringVar()
+        self.audio = ""
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
         Label(self.root,text="AUDIO TITLE").place(x=10,y=30)
@@ -29,13 +29,13 @@ class editor():
         Button(self.root,text="EXPORT AS .OGG",width=15,height=2).place(x=650,y=239)#.place(x=650,y=177)
         Button(self.root,text="EXPORT AS .FLV",width=15,height=2).place(x=797,y=177)#.place(x=797,y=177)
         Button(self.root,text="EXPORT AS .MP3",width=15,height=2).place(x=650,y=115)#.place(x=650,y=239)
-        Button(self.root,text="EXPORT AS .WAV",width=15,height=2).place(x=797,y=115)#.place(x=797,y=239)
+        Button(self.root,text="EXPORT AS .WAV",width=15,height=2,command=self.init_task).place(x=797,y=115)#.place(x=797,y=239)
         Button(self.root,text="CHANGE DIRECTORY",width=36,height=2,command=self.change_dir).place(x=650,y=53)#.place(x=650,y=301)
         Button(self.root,text="REVERSE AUDIO",width=35,height=2).place(x=12,y=177)
         Button(self.root,text="METADATA",width=35,height=2).place(x=12,y=239)
         Button(self.root,text="PLAY AUDIO",width=35,height=2).place(x=12,y=301)
-        self.slider = Scale(self.root,length=130,bg="light gray",from_=50, to=1)
-        self.slider.set(1)
+        self.slider = Scale(self.root,length=130,bg="light gray",from_=50, to=-50)
+        self.slider.set(0)
         self.slider.place(x=300,y=207)
         Label(self.root,text="SPEED UP").place(x=290,y=180)
         self.slider1 = Scale(self.root,length=130,bg="light gray",from_=50, to=1)
@@ -70,6 +70,13 @@ class editor():
         if directory != "":
             os.chdir(directory)
             self.currentDir.set(directory)
+
+    def init_task(self):
+        t = threading.Thread(target=self.export_audio)
+        t.start()
+
+    def export_audio(self):
+        self.audio.export("newaudio.wav",format="wav")
 
     def import_audio(self):
         if self.ex == ".mp3":
