@@ -14,6 +14,7 @@ class editor():
         self.currentDir.set(os.getcwd())
         self.audioName = StringVar()
         self.audio = ""
+        #self.extensions = ["wav","mp3","flv","ogg","mp2","mp4","aac","au"]
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
         Label(self.root,text="AUDIO TITLE").place(x=10,y=30)
@@ -22,22 +23,22 @@ class editor():
         #self.durationEntry = Entry(self.root,textvariable=self.duration,width=13,font=('arial 20'),bg="black",fg="red").place(x=690,y=53)
         #Label(self.root,text="DURATION(MINUTES)").place(x=690,y=30)
         Button(self.root,text="SEARCH AUDIO FILE",width=86,height=2,command=self.open_file).place(x=12,y=100)
-        Button(self.root,text="EXPORT AS .AU",width=15,height=2).place(x=650,y=177)
-        Button(self.root,text="EXPORT AS .AAC",width=15,height=2).place(x=797,y=301)#.place(x=797,y=53)
-        Button(self.root,text="EXPORT AS .MP4",width=15,height=2).place(x=650,y=301)#.place(x=650,y=115)
-        Button(self.root,text="EXPORT AS .MP2",width=15,height=2).place(x=797,y=239)#.place(x=797,y=115)
-        Button(self.root,text="EXPORT AS .OGG",width=15,height=2).place(x=650,y=239)#.place(x=650,y=177)
-        Button(self.root,text="EXPORT AS .FLV",width=15,height=2).place(x=797,y=177)#.place(x=797,y=177)
-        Button(self.root,text="EXPORT AS .MP3",width=15,height=2).place(x=650,y=115)#.place(x=650,y=239)
-        Button(self.root,text="EXPORT AS .WAV",width=15,height=2,command=self.init_task).place(x=797,y=115)#.place(x=797,y=239)
+        Button(self.root,text="EXPORT AS .AU",width=15,height=2,command=lambda:self.init_task("au")).place(x=650,y=177)
+        Button(self.root,text="EXPORT AS .AAC",width=15,height=2,command=lambda:self.init_task("aac")).place(x=797,y=301)#.place(x=797,y=53)
+        Button(self.root,text="EXPORT AS .MP4",width=15,height=2,command=lambda:self.init_task("mp4")).place(x=650,y=301)#.place(x=650,y=115)
+        Button(self.root,text="EXPORT AS .MP2",width=15,height=2,command=lambda:self.init_task("mp2")).place(x=797,y=239)#.place(x=797,y=115)
+        Button(self.root,text="EXPORT AS .OGG",width=15,height=2,command=lambda:self.init_task("ogg")).place(x=650,y=239)#.place(x=650,y=177)
+        Button(self.root,text="EXPORT AS .FLV",width=15,height=2,command=lambda:self.init_task("flv")).place(x=797,y=177)#.place(x=797,y=177)
+        Button(self.root,text="EXPORT AS .MP3",width=15,height=2,command=lambda:self.init_task("mp3")).place(x=650,y=115)#.place(x=650,y=239)
+        Button(self.root,text="EXPORT AS .WAV",width=15,height=2,command=lambda:self.init_task("wav")).place(x=797,y=115)#.place(x=797,y=239)
         Button(self.root,text="CHANGE DIRECTORY",width=36,height=2,command=self.change_dir).place(x=650,y=53)#.place(x=650,y=301)
         Button(self.root,text="REVERSE AUDIO",width=35,height=2).place(x=12,y=177)
         Button(self.root,text="METADATA",width=35,height=2).place(x=12,y=239)
         Button(self.root,text="PLAY AUDIO",width=35,height=2).place(x=12,y=301)
-        self.slider = Scale(self.root,length=130,bg="light gray",from_=50, to=-50)
+        self.slider = Scale(self.root,length=130,bg="light gray",from_=10, to=-10)
         self.slider.set(0)
         self.slider.place(x=300,y=207)
-        Label(self.root,text="SPEED UP").place(x=290,y=180)
+        Label(self.root,text="SPEED").place(x=302,y=180)
         self.slider1 = Scale(self.root,length=130,bg="light gray",from_=50, to=1)
         self.slider1.set(1)
         self.slider1.place(x=370,y=207)
@@ -61,7 +62,7 @@ class editor():
                      ("flv files","*.flv"),("mp4 files","*.mp4")))
         if self.audio_file != "":
             audio_f = (self.audio_file.split("/"))[-1]
-            name,self.ex = os.path.splitext(audio_f)
+            self.name,self.ex = os.path.splitext(audio_f)
             self.audioName.set(audio_f)
             self.import_audio()
 
@@ -71,12 +72,13 @@ class editor():
             os.chdir(directory)
             self.currentDir.set(directory)
 
-    def init_task(self):
+    def init_task(self,ex):
+        self.extension = ex
         t = threading.Thread(target=self.export_audio)
         t.start()
 
     def export_audio(self):
-        self.audio.export("newaudio.wav",format="wav")
+        self.audio.export(self.name+"."+self.extension,format=self.extension)
 
     def import_audio(self):
         if self.ex == ".mp3":
