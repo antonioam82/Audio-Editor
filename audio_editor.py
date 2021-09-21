@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import os
 import threading
 from pydub import AudioSegment
@@ -32,7 +32,7 @@ class editor():
         Button(self.root,text="EXPORT AS .MP3",width=15,height=2,command=lambda:self.init_task("mp3")).place(x=650,y=115)#.place(x=650,y=239)
         Button(self.root,text="EXPORT AS .WAV",width=15,height=2,command=lambda:self.init_task("wav")).place(x=797,y=115)#.place(x=797,y=239)
         Button(self.root,text="CHANGE DIRECTORY",width=36,height=2,command=self.change_dir).place(x=650,y=53)#.place(x=650,y=301)
-        Button(self.root,text="REVERSE AUDIO",width=35,height=2).place(x=12,y=177)
+        Button(self.root,text="REVERSE AUDIO",width=35,height=2,command=self.reverse_audio).place(x=12,y=177)
         Button(self.root,text="METADATA",width=35,height=2).place(x=12,y=239)
         Button(self.root,text="PLAY AUDIO",width=35,height=2).place(x=12,y=301)
         self.slider = Scale(self.root,length=130,bg="light gray",from_=10, to=-10)
@@ -73,12 +73,21 @@ class editor():
             self.currentDir.set(directory)
 
     def init_task(self,ex):
-        self.extension = ex
-        t = threading.Thread(target=self.export_audio)
-        t.start()
+        if self.audio != "":
+            self.extension = ex
+            t = threading.Thread(target=self.export_audio)
+            t.start()
+
+    def reverse_audio(self):
+        self.audio = self.audio.reverse()
+        print("REVERSED")
 
     def export_audio(self):
-        self.audio.export(self.name+"."+self.extension,format=self.extension)
+        try:
+            self.audio.export(self.name+"."+self.extension,format=self.extension)
+        except Exception as e:
+            messagebox.showwarning("UNEXPECTED ERROR",str(e))
+        print("SAVED")
 
     def import_audio(self):
         if self.ex == ".mp3":
