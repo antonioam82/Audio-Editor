@@ -35,7 +35,7 @@ class editor():
         Button(self.root,text="REVERSE AUDIO",width=35,height=2,command=self.reverse_audio).place(x=12,y=177)
         Button(self.root,text="METADATA",width=35,height=2).place(x=12,y=239)
         Button(self.root,text="PLAY AUDIO",width=35,height=2).place(x=12,y=301)
-        self.stateLabel = Label(self.root,text="",width=86)
+        self.stateLabel = Label(self.root,text="",width=86,fg="red")
         self.stateLabel.place(x=14,y=148)
         self.slider = Scale(self.root,length=130,bg="light gray",from_=10, to=-10)
         self.slider.set(0)
@@ -83,14 +83,16 @@ class editor():
     def reverse_audio(self):
         if self.audio != "":
             self.audio = self.audio.reverse()
-            print("REVERSED")
+            self.stateLabel.configure(text="REVERSED")
 
     def export_audio(self):
+        self.stateLabel.configure(text="SAVING FILE")
         try:
             self.audio.export(self.name+"."+self.extension,format=self.extension)
+            messagebox.showinfo("SAVED","Created file {}.".format(self.name+"."+self.extension))
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
-        print("SAVED")
+        self.stateLabel.configure(text="")
 
     def import_audio(self):
         if self.ex == ".mp3":
