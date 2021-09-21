@@ -79,8 +79,9 @@ class editor():
             t.start()
 
     def reverse_audio(self):
-        self.audio = self.audio.reverse()
-        print("REVERSED")
+        if self.audio != "":
+            self.audio = self.audio.reverse()
+            print("REVERSED")
 
     def export_audio(self):
         try:
