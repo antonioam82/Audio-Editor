@@ -7,7 +7,7 @@ from pydub import AudioSegment
 class editor():
     def __init__(self):
         self.root = Tk()
-        self.root.geometry('923x410')
+        self.root.geometry('923x375')
         self.root.title("Audio Editor")
 
         self.currentDir = StringVar()
