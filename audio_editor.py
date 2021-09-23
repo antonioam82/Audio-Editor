@@ -34,7 +34,7 @@ class editor():
         Button(self.root,text="EXPORT AS .WAV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("wav")).place(x=797,y=115)#.place(x=797,y=239)
         Button(self.root,text="CHANGE DIRECTORY",width=36,height=2,bg="gray70",command=self.change_dir).place(x=650,y=53)#.place(x=650,y=301)
         Button(self.root,text="REVERSE AUDIO",width=35,height=2,bg="light green",command=self.reverse_audio).place(x=12,y=177)
-        Button(self.root,text="METADATA",width=35,height=2,bg="light green").place(x=12,y=239)
+        Button(self.root,text="CLEAR CHANGES",width=35,height=2,bg="light green",command=self.clear_changes).place(x=12,y=239)
         Button(self.root,text="PLAY AUDIO",width=35,height=2,bg="light green").place(x=12,y=301)
         self.stateLabel = Label(self.root,text="",width=86,bg="gray28",fg="red")
         self.stateLabel.place(x=14,y=148)
@@ -75,6 +75,10 @@ class editor():
         self.audio = self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})
         return (self.audio.set_frame_rate(self.audio.frame_rate))
 
+    def clear_changes(self):
+        self.audio = self.original_audio
+        self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
+
     def change_dir(self):
         directory=filedialog.askdirectory()
         if directory != "":
@@ -100,6 +104,7 @@ class editor():
             messagebox.showinfo("SAVED","Created file {}.".format(self.name+"."+self.extension))
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
+        #self.audio=self.original_audio
         self.stateLabel.configure(text="")
 
     def import_audio(self):
@@ -113,9 +118,11 @@ class editor():
             self.audio = AudioSegment.from_flv(self.audio_file)
         else:
             self.audio = AudioSegment.from_file(self.audio_file)
+        self.original_audio = self.audio
         #self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
                                                      
 if __name__=="__main__":
     editor()
+
     
 
