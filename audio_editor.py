@@ -38,8 +38,8 @@ class editor():
         Button(self.root,text="PLAY AUDIO",width=35,height=2,bg="light green").place(x=12,y=301)
         self.stateLabel = Label(self.root,text="",width=86,bg="gray28",fg="red")
         self.stateLabel.place(x=14,y=148)
-        self.slider = Scale(self.root,length=130,bg="gray25",fg="white",from_=2.00, to=-2.00, digits = 3, resolution = 0.01)
-        self.slider.set(0.00)
+        self.slider = Scale(self.root,length=130,bg="gray25",fg="white",from_=0.01, to=2.00, digits = 3, resolution = 0.01)
+        self.slider.set(1.00)
         self.slider.place(x=300,y=207)
         Label(self.root,text="SPEED",fg="white",bg="gray28").place(x=302,y=180)
         self.slider1 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=1)
@@ -69,6 +69,12 @@ class editor():
             self.audioName.set(audio_f)
             self.import_audio()
 
+    def change_speed(self):
+        speed = self.slider.get()
+        print(self.audio.frame_rate)
+        self.audio = self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})
+        return (self.audio.set_frame_rate(self.audio.frame_rate))
+
     def change_dir(self):
         directory=filedialog.askdirectory()
         if directory != "":
@@ -88,6 +94,7 @@ class editor():
 
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
+        self.change_speed()
         try:
             self.audio.export(self.name+"."+self.extension,format=self.extension)
             messagebox.showinfo("SAVED","Created file {}.".format(self.name+"."+self.extension))
