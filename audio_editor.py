@@ -76,8 +76,9 @@ class editor():
         return (self.audio.set_frame_rate(self.audio.frame_rate))
 
     def clear_changes(self):
-        self.audio = self.original_audio
-        self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
+        if self.audio != "":
+            self.audio = self.original_audio
+            self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
 
     def change_dir(self):
         directory=filedialog.askdirectory()
@@ -123,6 +124,7 @@ class editor():
                                                      
 if __name__=="__main__":
     editor()
+
 
     
 
