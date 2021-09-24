@@ -36,7 +36,7 @@ class editor():
         Button(self.root,text="REVERSE AUDIO",width=35,height=2,bg="light green",command=self.reverse_audio).place(x=12,y=177)
         Button(self.root,text="CLEAR CHANGES",width=35,height=2,bg="light green",command=self.clear_changes).place(x=12,y=239)
         Button(self.root,text="PLAY AUDIO",width=35,height=2,bg="light green").place(x=12,y=301)
-        self.stateLabel = Label(self.root,text="",width=86,bg="gray28",fg="red")
+        self.stateLabel = Label(self.root,text="",width=86,bg="gray28",fg="light blue")
         self.stateLabel.place(x=14,y=148)
         self.slider = Scale(self.root,length=130,bg="gray25",fg="white",from_=0.01, to=2.00, digits = 3, resolution = 0.01)
         self.slider.set(1.00)
@@ -49,10 +49,10 @@ class editor():
         self.slider2 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=-50)
         self.slider2.place(x=440,y=207)
         Label(self.root,text="GAIN",fg="white",bg="gray28").place(x=443,y=180)
-        self.slider3 = Scale(self.root,bg="gray25",fg="white",length=130, from_=20, to=0)
+        self.slider3 = Scale(self.root,bg="gray25",fg="white",length=130, from_=500, to=1)
         self.slider3.place(x=510,y=207)
         Label(self.root,text="FADE IN",fg="white",bg="gray28").place(x=505,y=180)
-        self.slider4 = Scale(self.root,bg="gray25",fg="white",length=130, from_=20, to=0)
+        self.slider4 = Scale(self.root,bg="gray25",fg="white",length=130, from_=500, to=1)
         self.slider4.place(x=580,y=207)
         Label(self.root,text="FADE OUT",fg="white",bg="gray28").place(x=570,y=180)
 
@@ -69,15 +69,18 @@ class editor():
             self.audioName.set(audio_f)
             self.import_audio()
 
-    def change_speed(self):
+    def change_audio_characts(self):
         speed = self.slider.get()
         print(self.audio.frame_rate)
-        self.audio = self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})
+        self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get())
         return (self.audio.set_frame_rate(self.audio.frame_rate))
 
     def clear_changes(self):
         if self.audio != "":
             self.audio = self.original_audio
+            self.slider.set(1.00)
+            self.slider4.set(1)
+            self.slider3.set(1)
             self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
 
     def change_dir(self):
@@ -99,7 +102,7 @@ class editor():
 
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
-        self.change_speed()
+        self.change_audio_characts()
         try:
             self.audio.export(self.name+"."+self.extension,format=self.extension)
             messagebox.showinfo("SAVED","Created file {}.".format(self.name+"."+self.extension))
