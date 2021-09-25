@@ -103,11 +103,11 @@ class editor():
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
         self.change_audio_characts()
-        file = filedialog.asksaveasfilename(initialdir="/",
+        file = filedialog.asksaveasfilename(initialdir="/",initialfile=self.name,
                 title="SAVE AS",defaultextension="."+self.extension)
         if file != "":
             self.audio.export(file,format=self.extension)
-            messagebox.showinfo("SAVED","Created file {}.".format(self.name+"."+self.extension))
+            messagebox.showinfo("SAVED FILE","Saved file in: {}.".format(file))
         self.stateLabel.configure(text="")
 
     def import_audio(self):
@@ -126,6 +126,7 @@ class editor():
                                                      
 if __name__=="__main__":
     editor()
+
 
 
     
