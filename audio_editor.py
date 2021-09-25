@@ -103,12 +103,11 @@ class editor():
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
         self.change_audio_characts()
-        try:
-            self.audio.export(self.name+"."+self.extension,format=self.extension)
+        file = filedialog.asksaveasfilename(initialdir="/",
+                title="SAVE AS",defaultextension="."+self.extension)
+        if file != "":
+            self.audio.export(file,format=self.extension)
             messagebox.showinfo("SAVED","Created file {}.".format(self.name+"."+self.extension))
-        except Exception as e:
-            messagebox.showwarning("UNEXPECTED ERROR",str(e))
-        #self.audio=self.original_audio
         self.stateLabel.configure(text="")
 
     def import_audio(self):
