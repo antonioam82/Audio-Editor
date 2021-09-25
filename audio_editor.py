@@ -38,15 +38,15 @@ class editor():
         Button(self.root,text="PLAY AUDIO",width=35,height=2,bg="light green").place(x=12,y=301)
         self.stateLabel = Label(self.root,text="",width=86,bg="gray28",fg="light blue")
         self.stateLabel.place(x=14,y=148)
-        self.slider = Scale(self.root,length=130,bg="gray25",fg="white",from_=0.01, to=2.00, digits = 3, resolution = 0.01)
+        self.slider = Scale(self.root,length=130,bg="gray25",fg="white",from_=2.00, to=0.01, digits = 3, resolution = 0.01)
         self.slider.set(1.00)
         self.slider.place(x=300,y=207)
         Label(self.root,text="SPEED",fg="white",bg="gray28").place(x=302,y=180)
-        self.slider1 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=1)
+        self.slider1 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=-50)
         self.slider1.set(1)
         self.slider1.place(x=370,y=207)
         Label(self.root,text="VOLUME",fg="white",bg="gray28").place(x=363,y=180)
-        self.slider2 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=-50)
+        self.slider2 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=1)
         self.slider2.place(x=440,y=207)
         Label(self.root,text="GAIN",fg="white",bg="gray28").place(x=443,y=180)
         self.slider3 = Scale(self.root,bg="gray25",fg="white",length=130, from_=500, to=1)
@@ -72,7 +72,8 @@ class editor():
     def change_audio_characts(self):
         speed = self.slider.get()
         print(self.audio.frame_rate)
-        self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get())
+        self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
+                      ).apply_gain(self.slider2.get())+self.slider1.get()
         return (self.audio.set_frame_rate(self.audio.frame_rate))
 
     def clear_changes(self):
@@ -81,6 +82,7 @@ class editor():
             self.slider.set(1.00)
             self.slider4.set(1)
             self.slider3.set(1)
+            self.slider1.set(1)
             self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
 
     def change_dir(self):
