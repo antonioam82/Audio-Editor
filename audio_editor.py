@@ -15,7 +15,6 @@ class editor():
         self.currentDir.set(os.getcwd())
         self.audioName = StringVar()
         self.audio = ""
-        #self.extensions = ["wav","mp3","flv","ogg","mp2","mp4","aac","au"]
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
         Label(self.root,text="AUDIO TITLE",fg="white",bg="gray28").place(x=10,y=30)
@@ -80,6 +79,7 @@ class editor():
         if self.audio != "":
             self.audio = self.original_audio
             self.slider.set(1.00)
+            self.slider2.set(1)
             self.slider4.set(1)
             self.slider3.set(1)
             self.slider1.set(1)
@@ -128,7 +128,6 @@ class editor():
                                                      
 if __name__=="__main__":
     editor()
-
 
 
     
