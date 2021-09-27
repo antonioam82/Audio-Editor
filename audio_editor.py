@@ -77,7 +77,12 @@ class editor():
 
     def play_audio(self):
         if self.audio != "":
-            playback.play(self.audio)
+            #self.change_audio_characts()
+            #self.audio.export("temporal.mp3",format="mp3")
+            try:
+                playback.play(self.audio)
+            except Exception as e:
+                messagebox.showwarning("UNEXPECTED ERROR",str(e))
 
     def init_task2(self):
         t = threading.Thread(target=self.play_audio)
