@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import filedialog, messagebox
 import os
 import threading
-from pydub import AudioSegment
+from pydub import AudioSegment, playback
 
 class editor():
     def __init__(self):
@@ -31,10 +31,10 @@ class editor():
         Button(self.root,text="EXPORT AS .FLV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("flv")).place(x=797,y=177)#.place(x=797,y=177)
         Button(self.root,text="EXPORT AS .MP3",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("mp3")).place(x=650,y=115)#.place(x=650,y=239)
         Button(self.root,text="EXPORT AS .WAV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("wav")).place(x=797,y=115)#.place(x=797,y=239)
-        Button(self.root,text="CHANGE DIRECTORY",width=36,height=2,bg="gray70",command=self.change_dir).place(x=650,y=53)#.place(x=650,y=301)
+        Button(self.root,text="SEE GRAPH",width=36,height=2,bg="gray70",command=self.init_task2).place(x=650,y=53)#.place(x=650,y=301)
         Button(self.root,text="REVERSE AUDIO",width=35,height=2,bg="light green",command=self.reverse_audio).place(x=12,y=177)
         Button(self.root,text="CLEAR CHANGES",width=35,height=2,bg="light green",command=self.clear_changes).place(x=12,y=239)
-        Button(self.root,text="PLAY AUDIO",width=35,height=2,bg="light green").place(x=12,y=301)
+        Button(self.root,text="PLAY AUDIO",width=35,height=2,bg="light green",command=self.stop_audio).place(x=12,y=301)
         self.stateLabel = Label(self.root,text="",width=86,bg="gray28",fg="light blue")
         self.stateLabel.place(x=14,y=148)
         self.slider = Scale(self.root,length=130,bg="gray25",fg="white",from_=2.00, to=0.01, digits = 3, resolution = 0.01)
@@ -75,6 +75,17 @@ class editor():
                       ).apply_gain(self.slider2.get())+self.slider1.get()
         return (self.audio.set_frame_rate(self.audio.frame_rate))
 
+    def play_audio(self):
+        if self.audio != "":
+            playback.play(self.audio)
+
+    def init_task2(self):
+        t = threading.Thread(target=self.play_audio)
+        t.start()
+
+    def stop_audio(self):
+        playback.stop()
+        
     def clear_changes(self):
         if self.audio != "":
             self.audio = self.original_audio
@@ -84,12 +95,6 @@ class editor():
             self.slider3.set(1)
             self.slider1.set(1)
             self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
-
-    def change_dir(self):
-        directory=filedialog.askdirectory()
-        if directory != "":
-            os.chdir(directory)
-            self.currentDir.set(directory)
 
     def init_task(self,ex):
         if self.audio != "":
@@ -113,17 +118,21 @@ class editor():
         self.stateLabel.configure(text="")
 
     def import_audio(self):
-        if self.ex == ".mp3":
-            self.audio = AudioSegment.from_mp3(self.audio_file)
-        elif self.ex == ".wav":
-            self.audio = AudioSegment.from_wav(self.audio_file)
-        elif self.ex == ".ogg":
-            self.audio = AudioSegment.from_ogg(self.audio_file)
-        elif self.ex == ".flv":
-            self.audio = AudioSegment.from_flv(self.audio_file)
-        else:
-            self.audio = AudioSegment.from_file(self.audio_file)
-        self.original_audio = self.audio
+        try:
+            if self.ex == ".mp3":
+                self.audio = AudioSegment.from_mp3(self.audio_file)
+            elif self.ex == ".wav":
+                self.audio = AudioSegment.from_wav(self.audio_file)
+            elif self.ex == ".ogg":
+                self.audio = AudioSegment.from_ogg(self.audio_file)
+            elif self.ex == ".flv":
+                self.audio = AudioSegment.from_flv(self.audio_file)
+            else:
+                self.audio = AudioSegment.from_file(self.audio_file)
+            self.original_audio = self.audio
+        except Exception as e:
+            messagebox.showwarning("UNEXPECTED ERROR",str(e))
+            self.audio = ""
         #self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
                                                      
 if __name__=="__main__":
