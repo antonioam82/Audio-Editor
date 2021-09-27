@@ -31,10 +31,10 @@ class editor():
         Button(self.root,text="EXPORT AS .FLV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("flv")).place(x=797,y=177)#.place(x=797,y=177)
         Button(self.root,text="EXPORT AS .MP3",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("mp3")).place(x=650,y=115)#.place(x=650,y=239)
         Button(self.root,text="EXPORT AS .WAV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("wav")).place(x=797,y=115)#.place(x=797,y=239)
-        Button(self.root,text="SEE GRAPH",width=36,height=2,bg="gray70",command=self.init_task2).place(x=650,y=53)#.place(x=650,y=301)
+        Button(self.root,text="PLAY AUDIO",width=36,height=2,bg="gray70",command=self.init_task2).place(x=650,y=53)#.place(x=650,y=301)
         Button(self.root,text="REVERSE AUDIO",width=35,height=2,bg="light green",command=self.reverse_audio).place(x=12,y=177)
         Button(self.root,text="CLEAR CHANGES",width=35,height=2,bg="light green",command=self.clear_changes).place(x=12,y=239)
-        Button(self.root,text="PLAY AUDIO",width=35,height=2,bg="light green",command=self.stop_audio).place(x=12,y=301)
+        Button(self.root,text="...",width=35,height=2,bg="light green").place(x=12,y=301)
         self.stateLabel = Label(self.root,text="",width=86,bg="gray28",fg="light blue")
         self.stateLabel.place(x=14,y=148)
         self.slider = Scale(self.root,length=130,bg="gray25",fg="white",from_=2.00, to=0.01, digits = 3, resolution = 0.01)
@@ -82,9 +82,6 @@ class editor():
     def init_task2(self):
         t = threading.Thread(target=self.play_audio)
         t.start()
-
-    def stop_audio(self):
-        playback.stop()
         
     def clear_changes(self):
         if self.audio != "":
