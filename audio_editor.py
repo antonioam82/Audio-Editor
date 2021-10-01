@@ -74,7 +74,7 @@ class editor():
         speed = self.slider.get()
         self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
                       ).apply_gain(self.slider2.get())+self.slider1.get()
-        self.history = self.history+"-->APPLIED AUDIO CHARACTS.\n\n"
+        self.history = self.history+"-->APPLIED AUDIO CHARACTS.\n"
         return (self.audio.set_frame_rate(self.audio.frame_rate))
 
     def play_audio(self):
@@ -107,7 +107,7 @@ class editor():
             self.slider3.set(1)
             self.slider1.set(1)
             self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
-            self.history = self.history+("-->RESTORED ORIGINAL AUDIO.\n\n")
+            self.history = self.history+("-->RESTORED ORIGINAL AUDIO.\n")
 
     def init_task(self,ex):
         if self.audio != "":
@@ -119,11 +119,11 @@ class editor():
         if self.audio != "":
             try:
                 self.audio = self.audio.reverse()
-                self.history=self.history+"-->AUDIO REVERSED.\n\n"
+                self.history=self.history+"-->AUDIO REVERSED.\n"
                 self.stateLabel.configure(text="REVERSED")
             except Exception as e:
                 messagebox.showwarning("UNEXPECTED ERROR",str(e))
-                self.history = self.history+("-->UNEXPECTED ERROR: {}.".format(str(e)))+"\n\n"
+                self.history = self.history+("-->UNEXPECTED ERROR: {}.".format(str(e)))+"\n"
 
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
@@ -133,7 +133,7 @@ class editor():
         if file != "":
             self.audio.export(file,format=self.extension)
             messagebox.showinfo("SAVED FILE","Saved file in: {}.".format(file))
-            self.history = self.history+("-->SAVED FILE IN: {}.".format(file))+"\n\n"
+            self.history = self.history+("-->SAVED FILE IN: {}.".format(file))+"\n"
         self.stateLabel.configure(text="")
 
     def import_audio(self):
@@ -148,11 +148,11 @@ class editor():
                 self.audio = AudioSegment.from_flv(self.audio_file)
             else:
                 self.audio = AudioSegment.from_file(self.audio_file)
-            self.history = self.history+("\n-->LOADED: {}.".format(self.audio_f))+"\n\n"
+            self.history = self.history+("\n-->LOADED: {}.".format(self.audio_f))+"\n"
             self.original_audio = self.audio
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
-            self.history = self.history+("-->UNEXPECTED ERROR: {}.".format(str(e)))+"\n\n"
+            self.history = self.history+("-->UNEXPECTED ERROR: {}.".format(str(e)))+"\n"
             self.audio = ""
         #self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
                                                      
