@@ -75,6 +75,7 @@ class editor():
         print(self.audio.frame_rate)
         self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
                       ).apply_gain(self.slider2.get())+self.slider1.get()
+        self.history = self.history+"-->CHANGED AUDIO CHARACTS.\n\n"
         return (self.audio.set_frame_rate(self.audio.frame_rate))
 
     def play_audio(self):
