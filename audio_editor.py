@@ -72,10 +72,9 @@ class editor():
 
     def change_audio_characts(self):
         speed = self.slider.get()
-        print(self.audio.frame_rate)
         self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
                       ).apply_gain(self.slider2.get())+self.slider1.get()
-        self.history = self.history+"-->CHANGED AUDIO CHARACTS.\n\n"
+        self.history = self.history+"-->APPLIED AUDIO CHARACTS.\n\n"
         return (self.audio.set_frame_rate(self.audio.frame_rate))
 
     def play_audio(self):
@@ -95,7 +94,7 @@ class editor():
         if self.history != "":
             top = Toplevel()
             top.title("EDITION HISTORY")
-            display = sct.ScrolledText(master=top,width=90,height=30)
+            display = sct.ScrolledText(master=top,width=90,height=30,bg="khaki")
             display.pack(padx=0,pady=0)
             display.insert(END,self.history)
         
@@ -118,9 +117,13 @@ class editor():
 
     def reverse_audio(self):
         if self.audio != "":
-            self.audio = self.audio.reverse()
-            self.stateLabel.configure(text="REVERSED")
-            self.history=self.history+"-->AUDIO REVERSED.\n\n"
+            try:
+                self.audio = self.audio.reverse()
+                self.history=self.history+"-->AUDIO REVERSED.\n\n"
+                self.stateLabel.configure(text="REVERSED")
+            except Exception as e:
+                messagebox.showwarning("UNEXPECTED ERROR",str(e))
+                self.history = self.history+("-->UNEXPECTED ERROR: {}.".format(str(e)))+"\n\n"
 
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
@@ -149,6 +152,7 @@ class editor():
             self.original_audio = self.audio
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
+            self.history = self.history+("-->UNEXPECTED ERROR: {}.".format(str(e)))+"\n\n"
             self.audio = ""
         #self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
                                                      
