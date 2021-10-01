@@ -1,175 +1,158 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import pandas as pd
-from pandas_datareader import data as pdr
-import pickle
-import yfinance as yf
 from tkinter import *
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import filedialog, messagebox
 import tkinter.scrolledtext as sct
-import datetime as date
-from datetime import datetime, timedelta
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import matplotlib.animation as animation
-from matplotlib import style
 import os
-#import mplfinance as mpf
-import numpy as np
+import threading
+from pydub import AudioSegment, playback
 
-if not 'symbols' in os.listdir():
-    fichero = open('symbols','wb')
-    pickle.dump([],fichero)
-    fichero.close()
+class editor():
+    def __init__(self):
+        self.root = Tk()
+        self.root.geometry('923x375')
+        self.root.title("Audio Editor")
+        self.root.configure(bg="gray28")
 
-now = datetime.now()
-previous = now - timedelta(days = 500)
+        self.currentDir = StringVar()
+        self.currentDir.set(os.getcwd())
+        self.audioName = StringVar()
+        self.audio = ""
+        self.history = ""
 
-style.use('dark_background')
-root = Tk()
-root.title("Finan Graph 5")
-root.configure(background="gray")
-root.geometry("1160x800")
-start_date = StringVar()
-end_date = StringVar()
-df2 = ""
-table_head = ""
-used_symbols = sorted(pickle.load(open("symbols","rb")))
-actv = False
-fig = Figure()
-ax1 = fig.add_subplot(111)
-ax1.set_ylabel("PRICE")
-ax1.set_xlabel("TIME")
-ax1.grid()
-selected_items = ["Close"]
-item_list = ["Low","High","Open","Close","EMA_50","EMA_200"]
+        Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
+        Label(self.root,text="AUDIO TITLE",fg="white",bg="gray28").place(x=10,y=30)
+        self.entryName = Entry(self.root,textvariable=self.audioName,bg="black",fg="green",width=34,font=('arial 24'))
+        self.entryName.place(x=10,y=53)
+        #self.durationEntry = Entry(self.root,textvariable=self.duration,width=13,font=('arial 20'),bg="black",fg="red").place(x=690,y=53)
+        #Label(self.root,text="DURATION(MINUTES)").place(x=690,y=30)
+        Button(self.root,text="SEARCH AUDIO FILE",width=86,height=2,bg="gray70",command=self.open_file).place(x=12,y=100)
+        Button(self.root,text="EXPORT AS .AU",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("au")).place(x=650,y=177)
+        Button(self.root,text="EXPORT AS .AAC",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("aac")).place(x=797,y=301)#.place(x=797,y=53)
+        Button(self.root,text="EXPORT AS .MP4",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("mp4")).place(x=650,y=301)#.place(x=650,y=115)
+        Button(self.root,text="EXPORT AS .MP2",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("mp2")).place(x=797,y=239)#.place(x=797,y=115)
+        Button(self.root,text="EXPORT AS .OGG",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("ogg")).place(x=650,y=239)#.place(x=650,y=177)
+        Button(self.root,text="EXPORT AS .FLV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("flv")).place(x=797,y=177)#.place(x=797,y=177)
+        Button(self.root,text="EXPORT AS .MP3",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("mp3")).place(x=650,y=115)#.place(x=650,y=239)
+        Button(self.root,text="EXPORT AS .WAV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("wav")).place(x=797,y=115)#.place(x=797,y=239)
+        Button(self.root,text="PLAY AUDIO",width=36,height=2,bg="gray70",command=self.init_task2).place(x=650,y=53)#.place(x=650,y=301)
+        Button(self.root,text="REVERSE AUDIO",width=35,height=2,bg="light green",command=self.reverse_audio).place(x=12,y=177)
+        Button(self.root,text="CLEAR CHANGES",width=35,height=2,bg="light green",command=self.clear_changes).place(x=12,y=239)
+        Button(self.root,text="HISTORY",width=35,height=2,bg="light green",command=self.show_history).place(x=12,y=301)
+        self.stateLabel = Label(self.root,text="",width=86,bg="gray28",fg="light blue")
+        self.stateLabel.place(x=14,y=148)
+        self.slider = Scale(self.root,length=130,bg="gray25",fg="white",from_=2.00, to=0.01, digits = 3, resolution = 0.01)
+        self.slider.set(1.00)
+        self.slider.place(x=300,y=207)
+        Label(self.root,text="SPEED",fg="white",bg="gray28").place(x=302,y=180)
+        self.slider1 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=-50)
+        self.slider1.set(1)
+        self.slider1.place(x=370,y=207)
+        Label(self.root,text="VOLUME",fg="white",bg="gray28").place(x=363,y=180)
+        self.slider2 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=1)
+        self.slider2.place(x=440,y=207)
+        Label(self.root,text="GAIN",fg="white",bg="gray28").place(x=443,y=180)
+        self.slider3 = Scale(self.root,bg="gray25",fg="white",length=130, from_=500, to=1)
+        self.slider3.place(x=510,y=207)
+        Label(self.root,text="FADE IN",fg="white",bg="gray28").place(x=505,y=180)
+        self.slider4 = Scale(self.root,bg="gray25",fg="white",length=130, from_=500, to=1)
+        self.slider4.place(x=580,y=207)
+        Label(self.root,text="FADE OUT",fg="white",bg="gray28").place(x=570,y=180)
 
-canvas = FigureCanvasTkAgg(fig,master=root)
-canvas.draw()
-toolbar = NavigationToolbar2Tk(canvas, root)
-toolbar.update()
-canvas.get_tk_widget().pack(side=BOTTOM,fill=BOTH, expand=1)
+        self.root.mainloop()
 
-def activate():
-    global actv
-    actv = True
+    def open_file(self):
+        self.audio_file = filedialog.askopenfilename(initialdir = "/",
+                     title="Select audio",filetypes = (("mp3 files","*.mp3"),
+                     ("wav files","*.wav"),("ogg files","*.ogg"),
+                     ("flv files","*.flv"),("mp4 files","*.mp4")))
+        if self.audio_file != "":
+            self.audio_f = (self.audio_file.split("/"))[-1]
+            self.name,self.ex = os.path.splitext(self.audio_f)
+            self.audioName.set(self.audio_f)
+            self.import_audio()
 
-def show_table():
-    if str(df2) != "":
-        top = Toplevel()
-        top.title("INFO TABLE")
-        display = sct.ScrolledText(master=top,width=90,height=20)
-        display.pack(padx=0,pady=0)
-        display.insert(END,table_head+"\n\n"+str(df2))
-    else:
-        messagebox.showwarning("EMPTY","No data to show.")
+    def change_audio_characts(self):
+        speed = self.slider.get()
+        print(self.audio.frame_rate)
+        self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
+                      ).apply_gain(self.slider2.get())+self.slider1.get()
+        return (self.audio.set_frame_rate(self.audio.frame_rate))
 
+    def play_audio(self):
+        if self.audio != "":
+            #self.change_audio_characts()
+            #self.audio.export("temporal.mp3",format="mp3")
+            try:
+                playback.play(self.audio)
+            except Exception as e:
+                messagebox.showwarning("UNEXPECTED ERROR",str(e))
 
-def EMA(df, n):
-    EMA = pd.Series(pd.Series.ewm(df['Close'],span = n, min_periods = n-1, adjust=False).mean(), name='EMA_'+str(n))
-    df = df.join(EMA)
-    return df
+    def init_task2(self):
+        t = threading.Thread(target=self.play_audio)
+        t.start()
 
-def selection(n):
-    global selected_items
-    if n not in selected_items:
-        selected_items.append(n)
-        buttons[n].configure(bg="light green")
-    else:
-        selected_items.remove(n)
-        buttons[n].configure(bg="light gray")
-
-def validate_date(l):
-    if int(l[2]) <= 1 and int(l[1]) <= 1 and int(l[0]) <= 1970:
-        return None
-    else:
-        return l
+    def show_history(self):
+        if self.history != "":
+            top = Toplevel()
+            top.title("EDITION HISTORY")
+            display = sct.ScrolledText(master=top,width=90,height=30)
+            display.pack(padx=0,pady=0)
+            display.insert(END,self.history)
         
-def make_graph():
-    try:
-        global actv, df2, table_head
-        variables = []
-        ax1.clear()
-        ax1.grid()
-        end_list= validate_date(end_datee.get().split("/"))
-        start_list= validate_date(sts_entry.get().split("/"))
+    def clear_changes(self):
+        if self.audio != "":
+            self.audio = self.original_audio
+            self.slider.set(1.00)
+            self.slider2.set(1)
+            self.slider4.set(1)
+            self.slider3.set(1)
+            self.slider1.set(1)
+            self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
+            self.history = self.history+("-->RESTORED ORIGINAL AUDIO\n\n")
 
-        if end_list is not None and start_list is not None:
-            enddate = date.datetime(int(end_list[0]),int(end_list[1]),int(end_list[2]))
-            startdate = date.datetime(int(start_list[0]),int(start_list[1]),int(start_list[2]))
-            tick = tick_entry.get()
-            yf.pdr_override()
-            ipc = pdr.get_data_yahoo(tick, start = startdate, end = enddate)
-            difer ="{:.4f}".format(ipc['Close'][-1]-ipc['Close'][-2])
-            #print("MY INFO: ",ipc)
-            if not "Empty DataFrame" in str(ipc):
-                df = EMA(ipc, 50)
-                df2 = EMA(df, 200)
-                for i in item_list:
-                    if i in selected_items:
-                        variables.append(i)
-                df2 = df2[variables]
-                for i in df2:
-                    ax1.plot(df2[i])
-                ax1.legend(variables,loc='best', shadow=False)
-                ax1.set_ylabel("PRICE")
-                ax1.set_xlabel("DATES")
-                table_head = "{}({}). {}-{}".format(tick,difer,sts_entry.get(),end_datee.get())
-                ax1.set_title(table_head)
-                update_tickers(tick)
+    def init_task(self,ex):
+        if self.audio != "":
+            self.extension = ex
+            t = threading.Thread(target=self.export_audio)
+            t.start()
+
+    def reverse_audio(self):
+        if self.audio != "":
+            self.audio = self.audio.reverse()
+            self.stateLabel.configure(text="REVERSED")
+            self.history=self.history+"-->AUDIO REVERSED\n\n"
+
+    def export_audio(self):
+        self.stateLabel.configure(text="SAVING FILE")
+        self.change_audio_characts()
+        file = filedialog.asksaveasfilename(initialdir="/",initialfile=self.name,
+                title="SAVE AS",defaultextension="."+self.extension)
+        if file != "":
+            self.audio.export(file,format=self.extension)
+            messagebox.showinfo("SAVED FILE","Saved file in: {}.".format(file))
+            self.history = self.history+("-->SAVED FILE IN: {}.".format(file))+"\n\n"
+        self.stateLabel.configure(text="")
+
+    def import_audio(self):
+        try:
+            if self.ex == ".mp3":
+                self.audio = AudioSegment.from_mp3(self.audio_file)
+            elif self.ex == ".wav":
+                self.audio = AudioSegment.from_wav(self.audio_file)
+            elif self.ex == ".ogg":
+                self.audio = AudioSegment.from_ogg(self.audio_file)
+            elif self.ex == ".flv":
+                self.audio = AudioSegment.from_flv(self.audio_file)
             else:
-                messagebox.showwarning("NO DATA",str(ipc))
-        else:
-            messagebox.showwarning("ERROR","Bad date")
-        
-    except Exception as e:
-        messagebox.showwarning("UNEXPECTED ERROR",str(e))
-    actv = False
-
-def update_tickers(t):
-    if t not in used_symbols:
-        used_symbols.insert(0,tick_entry.get())
-        pickle.dump(used_symbols,open("symbols","wb"))
-        tick_entry["values"]=pickle.load(open("symbols","rb"))
-    
-def represent(i):
-    global actv
-    if actv == True:
-        make_graph()
-
-tick_entry = ttk.Combobox(root,width=10)
-tick_entry["values"]=used_symbols
-tick_entry.place(x=50,y=8)
-Label(root,height=2,bg="gray").pack(side=LEFT)
-Label(root,text="TICKER:",bg="gray",fg="white").place(x=3,y=8)
-Label(root,text="START DATE:",bg="gray",fg="white").place(x=135+11,y=8)
-Label(root,text="END DATE:",bg="gray",fg="white").place(x=296,y=8)
-sts_entry = Entry(root,textvariable=start_date,width=10)
-sts_entry.place(x=221,y=8)
-start_date.set("{}/{}/{}".format(previous.year,previous.month,previous.day))
-end_datee = Entry(root,textvariable=end_date,width=10)
-end_datee.place(x=362,y=8)
-end_date.set("{}/{}/{}".format(now.year,now.month,now.day))
-btnHigh = Button(root,text="High",bg="gray83",command=lambda:selection("High"),width=5)
-btnHigh.place(x=450,y=5)
-btnLow = Button(root,text="Low",bg="gray83",command=lambda:selection("Low"),width=5)
-btnLow.place(x=497,y=5)
-btnOpen = Button(root,text="Open",bg="gray83",command=lambda:selection("Open"),width=5)
-btnOpen.place(x=544,y=5)
-btnClose = Button(root,text="Close",bg="light green",command=lambda:selection("Close"),width=5)
-btnClose.place(x=591,y=5)
-btnEMA50 = Button(root,text="EMA 50",bg="gray83",command=lambda:selection("EMA_50"),width=8)
-btnEMA50.place(x=650,y=5)
-btnEMA200 = Button(root,text="EMA 200",bg="gray83",command=lambda:selection("EMA_200"),width=8)
-btnEMA200.place(x=716,y=5)
-Button(root,text="SHOW TABLE",bg="gray83",command=show_table).pack(side="right",padx=2)
-Button(root,text="SHOW GRAPH",bg="gray83",command=activate).pack(side="right",padx=2)
-
-ani = animation.FuncAnimation(fig, represent, interval=1000)
-buttons = {"High":btnHigh,"Low":btnLow,"Open":btnOpen,"Close":btnClose,"EMA_50":btnEMA50,"EMA_200":btnEMA200}
-root.mainloop()
+                self.audio = AudioSegment.from_file(self.audio_file)
+            self.history = self.history+("-->LOADED: {}.".format(self.audio_f))+"\n\n"
+            self.original_audio = self.audio
+        except Exception as e:
+            messagebox.showwarning("UNEXPECTED ERROR",str(e))
+            self.audio = ""
+        #self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
+                                                     
+if __name__=="__main__":
+    editor()
 
 
     
