@@ -107,7 +107,7 @@ class editor():
             self.slider3.set(1)
             self.slider1.set(1)
             self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
-            self.history = self.history+("-->RESTORED ORIGINAL AUDIO\n\n")
+            self.history = self.history+("-->RESTORED ORIGINAL AUDIO.\n\n")
 
     def init_task(self,ex):
         if self.audio != "":
@@ -119,7 +119,7 @@ class editor():
         if self.audio != "":
             self.audio = self.audio.reverse()
             self.stateLabel.configure(text="REVERSED")
-            self.history=self.history+"-->AUDIO REVERSED\n\n"
+            self.history=self.history+"-->AUDIO REVERSED.\n\n"
 
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
@@ -144,7 +144,7 @@ class editor():
                 self.audio = AudioSegment.from_flv(self.audio_file)
             else:
                 self.audio = AudioSegment.from_file(self.audio_file)
-            self.history = self.history+("-->LOADED: {}.".format(self.audio_f))+"\n\n"
+            self.history = self.history+("\n-->LOADED: {}.".format(self.audio_f))+"\n\n"
             self.original_audio = self.audio
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
