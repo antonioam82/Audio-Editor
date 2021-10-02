@@ -73,10 +73,11 @@ class editor():
     def change_audio_characts(self):
         speed = self.slider.get()
         self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
-                      ).apply_gain(self.slider2.get())+self.slider1.get()
-        self.history = self.history+"-->APPLIED AUDIO CHARACTS.\n"
+                        ).apply_gain(self.slider2.get())+self.slider1.get()
+        self.history = self.history+"---->APPLIED AUDIO CHARACTS.\n"
+        
         return (self.audio.set_frame_rate(self.audio.frame_rate))
-
+            
     def play_audio(self):
         if self.audio != "":
             #self.change_audio_characts()
@@ -94,7 +95,7 @@ class editor():
         if self.history != "":
             top = Toplevel()
             top.title("EDITION HISTORY")
-            display = sct.ScrolledText(master=top,width=90,height=30,bg="khaki")
+            display = sct.ScrolledText(master=top,width=90,height=30,bg="gray91")
             display.pack(padx=0,pady=0)
             display.insert(END,self.history)
         
@@ -107,7 +108,7 @@ class editor():
             self.slider3.set(1)
             self.slider1.set(1)
             self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
-            self.history = self.history+("-->RESTORED ORIGINAL AUDIO.\n")
+            self.history = self.history+("---->RESTORED ORIGINAL AUDIO.\n")
 
     def init_task(self,ex):
         if self.audio != "":
@@ -119,21 +120,26 @@ class editor():
         if self.audio != "":
             try:
                 self.audio = self.audio.reverse()
-                self.history=self.history+"-->AUDIO REVERSED.\n"
+                self.history=self.history+"---->AUDIO REVERSED.\n"
                 self.stateLabel.configure(text="REVERSED")
             except Exception as e:
                 messagebox.showwarning("UNEXPECTED ERROR",str(e))
-                self.history = self.history+("-->UNEXPECTED ERROR: {}.".format(str(e)))+"\n"
+                self.history = self.history+("---->UNEXPECTED ERROR: {}.".format(str(e)))+"\n"
 
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
-        self.change_audio_characts()
-        file = filedialog.asksaveasfilename(initialdir="/",initialfile=self.name,
-                title="SAVE AS",defaultextension="."+self.extension)
-        if file != "":
-            self.audio.export(file,format=self.extension)
-            messagebox.showinfo("SAVED FILE","Saved file in: {}.".format(file))
-            self.history = self.history+("-->SAVED FILE IN: {}.".format(file))+"\n"
+        try:
+            self.change_audio_characts()
+            file = filedialog.asksaveasfilename(initialdir="/",initialfile=self.name,
+                    title="SAVE AS",defaultextension="."+self.extension)
+            if file != "":
+                self.audio.export(file,format=self.extension)
+                messagebox.showinfo("SAVED FILE","Saved file in: {}.".format(file))
+                self.history = self.history+("---->SAVED FILE IN: {}.".format(file))+"\n"
+        except Exception as e:
+            messagebox.showwarning("UNEXPECTED ERROR",str(e))
+            self.history=self.history+"---->UNEXPECTED ERROR: {}.\n".format(str(e))
+            
         self.stateLabel.configure(text="")
 
     def import_audio(self):
@@ -152,7 +158,7 @@ class editor():
             self.original_audio = self.audio
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
-            self.history = self.history+("-->UNEXPECTED ERROR: {}.".format(str(e)))+"\n"
+            self.history = self.history+("---->UNEXPECTED ERROR: {}.".format(str(e)))+"\n"
             self.audio = ""
         #self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
                                                      
