@@ -2,8 +2,10 @@ from tkinter import *
 from tkinter import filedialog, messagebox
 import tkinter.scrolledtext as sct
 import os
+from pygame import mixer
 import threading
-from pydub import AudioSegment, playback
+
+from pydub import AudioSegment
 
 class editor():
     def __init__(self):
@@ -17,6 +19,9 @@ class editor():
         self.audioName = StringVar()
         self.audio = ""
         self.history = ""
+        self.playing = False
+        mixer.init()
+        
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
         Label(self.root,text="AUDIO TITLE",fg="white",bg="gray28").place(x=10,y=30)
@@ -33,7 +38,8 @@ class editor():
         Button(self.root,text="EXPORT AS .FLV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("flv")).place(x=797,y=177)#.place(x=797,y=177)
         Button(self.root,text="EXPORT AS .MP3",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("mp3")).place(x=650,y=115)#.place(x=650,y=239)
         Button(self.root,text="EXPORT AS .WAV",width=15,height=2,bg="red",fg="white",command=lambda:self.init_task("wav")).place(x=797,y=115)#.place(x=797,y=239)
-        Button(self.root,text="PLAY AUDIO",width=36,height=2,bg="gray70",command=self.init_task2).place(x=650,y=53)#.place(x=650,y=301)
+        self.btnPlay = Button(self.root,text="PLAY AUDIO",width=36,height=2,bg="gray70",command=self.init_task2)
+        self.btnPlay.place(x=650,y=53)#.place(x=650,y=301)
         Button(self.root,text="REVERSE AUDIO",width=35,height=2,bg="light green",command=self.reverse_audio).place(x=12,y=177)
         Button(self.root,text="CLEAR CHANGES",width=35,height=2,bg="light green",command=self.clear_changes).place(x=12,y=239)
         Button(self.root,text="HISTORY",width=35,height=2,bg="light green",command=self.show_history).place(x=12,y=301)
@@ -80,12 +86,15 @@ class editor():
             
     def play_audio(self):
         if self.audio != "":
-            #self.change_audio_characts()
-            #self.audio.export("temporal.mp3",format="mp3")
-            try:
-                playback.play(self.audio)
-            except Exception as e:
-                messagebox.showwarning("UNEXPECTED ERROR",str(e))
+            if self.playing == False:
+                self.playing = True
+                mixer.music.load(self.audio_file)
+                mixer.music.play()
+                self.btnPlay.configure(text="STOP AUDIO")
+            else:
+                self.playing = False
+                mixer.music.stop()
+                self.btnPlay.configure(text="PLAY AUDIO")
 
     def init_task2(self):
         t = threading.Thread(target=self.play_audio)
