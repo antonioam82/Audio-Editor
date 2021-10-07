@@ -1,3 +1,4 @@
+
 from tkinter import *
 from tkinter import filedialog, messagebox
 import tkinter.scrolledtext as sct
@@ -86,15 +87,32 @@ class editor():
             
     def play_audio(self):
         if self.audio != "":
-            if self.playing == False:
-                self.playing = True
-                mixer.music.load(self.audio_file)
-                mixer.music.play()
-                self.btnPlay.configure(text="STOP AUDIO")
-            else:
-                self.playing = False
-                mixer.music.stop()
-                self.btnPlay.configure(text="PLAY AUDIO")
+            pos_time = mixer.music.get_pos()
+            mixer.music.load(self.audio_file)
+            mixer.music.play()
+            self.update_state()
+            print("hdhdh")
+
+    def update_state(self):
+        pos_time = mixer.music.get_pos()
+        if pos_time != -1:
+            self.btnPlay.configure(text="STOP AUDIO")
+            self.btnPlay.configure(command=self.stop_audio)
+            print("PLAYING")
+            self.root.after(500, self.update_state)
+        else:
+            print("NOT PLAYING")
+            self.btnPlay.configure(text="PLAY AUDIO")
+            self.btnPlay.configure(command=self.play_audio)
+            self.root.after_cancel(self.update_state)
+
+        #self.root.after(500, self.update_state)
+
+    def stop_audio(self):
+         mixer.music.stop()
+         self.btnPlay.configure(text="PLAY AUDIO")
+         self.btnPlay.configure(command=self.play_audio)
+
 
     def init_task2(self):
         t = threading.Thread(target=self.play_audio)
