@@ -1,4 +1,3 @@
-
 from tkinter import *
 from tkinter import filedialog, messagebox
 import tkinter.scrolledtext as sct
