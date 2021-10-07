@@ -4,7 +4,6 @@ import tkinter.scrolledtext as sct
 import os
 from pygame import mixer
 import threading
-
 from pydub import AudioSegment
 
 class editor():
