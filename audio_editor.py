@@ -89,7 +89,6 @@ class editor():
             mixer.music.load(self.audio_file)
             mixer.music.play()
             self.update_state()
-            print("hdhdh")
 
     def update_state(self):
         pos_time = mixer.music.get_pos()
@@ -103,8 +102,6 @@ class editor():
             self.btnPlay.configure(text="PLAY AUDIO")
             self.btnPlay.configure(command=self.play_audio)
             self.root.after_cancel(self.update_state)
-
-        #self.root.after(500, self.update_state)
 
     def stop_audio(self):
          mixer.music.stop()
@@ -185,7 +182,6 @@ class editor():
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
             self.history = self.history+("---->UNEXPECTED ERROR: {}.".format(str(e)))+"\n"
             self.audio = ""
-        #self.duration.set(str("{0:.6f}".format(self.audio.duration_seconds/60)))
                                                      
 if __name__=="__main__":
     editor()
