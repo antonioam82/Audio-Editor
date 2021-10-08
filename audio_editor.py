@@ -20,7 +20,6 @@ class editor():
         self.history = ""
         self.playing = False
         mixer.init()
-        
 
         Entry(self.root,textvariable=self.currentDir,width=153).place(x=0,y=0)
         Label(self.root,text="AUDIO TITLE",fg="white",bg="gray28").place(x=10,y=30)
@@ -85,8 +84,13 @@ class editor():
             
     def play_audio(self):
         if self.audio != "":
+            if "preview.wav" in os.listdir():
+                mixer.music.unload()
+                os.remove("preview.wav")
+            self.change_audio_characts()
+            self.audio.export("preview.wav",format="wav")
             pos_time = mixer.music.get_pos()
-            mixer.music.load(self.audio_file)
+            mixer.music.load("preview.wav")
             mixer.music.play()
             self.update_state()
 
@@ -102,6 +106,7 @@ class editor():
             self.btnPlay.configure(text="PLAY AUDIO")
             self.btnPlay.configure(command=self.play_audio)
             self.root.after_cancel(self.update_state)
+            #mixer.quit()
 
     def stop_audio(self):
          mixer.music.stop()
