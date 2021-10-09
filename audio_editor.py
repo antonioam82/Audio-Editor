@@ -122,9 +122,13 @@ class editor():
         if self.history != "":
             top = Toplevel()
             top.title("EDITION HISTORY")
-            display = sct.ScrolledText(master=top,width=90,height=30,bg="gray91")
-            display.pack(padx=0,pady=0)
-            display.insert(END,self.history)
+            self.display = sct.ScrolledText(master=top,width=90,height=30,bg="gray91")
+            self.display.pack(padx=0,pady=0)
+            self.display.insert(END,self.history)
+            Button(top,text="CLEAR HISTORY",bg="gray70",command=self.clear_history).pack(side=BOTTOM)
+
+    def clear_history(self):
+        self.display.delete('1.0',END)
         
     def clear_changes(self):
         if self.audio != "":
