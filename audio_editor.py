@@ -97,6 +97,7 @@ class editor():
             mixer.music.load("preview.wav")
             mixer.music.play()
             self.update_state()
+            self.history = self.history+("---->PLAYED PREVIEW AUDIO.\n")
 
     def update_state(self):
         pos_time = mixer.music.get_pos()
@@ -170,11 +171,12 @@ class editor():
                     title="SAVE AS",defaultextension="."+self.extension)
             if file != "":
                 self.audio.export(file,format=self.extension)
-                messagebox.showinfo("SAVED FILE","Saved file in: {}.".format(file))
-                self.history = self.history+("---->SAVED FILE IN: {}.".format(file))+"\n"
+                file_saved = (file).split("/")[-1]
+                messagebox.showinfo("SAVED FILE","Saved file as: {}.".format(file_saved))
+                self.history = self.history+("---->SAVED FILE AS: {}.".format(file_saved))+"\n"
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
-            self.history=self.history+"---->UNEXPECTED ERROR: {}.\n".format(str(e))
+            self.history=self.history+"---->UNEXPECTED ERROR: {}\n".format(str(e))
             
         self.stateLabel.configure(text="")
 
