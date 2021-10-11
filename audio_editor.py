@@ -74,10 +74,15 @@ class editor():
             self.audioName.set(self.audio_f)
             self.import_audio()
 
-    def change_audio_characts(self):
+    def change_audio_characts(self,mode):
         speed = self.slider.get()
-        self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
+        if mode == "save":
+            self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
                         ).apply_gain(self.slider2.get())+self.slider1.get()
+        else:
+            self.prev_audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
+                        ).apply_gain(self.slider2.get())+self.slider1.get()
+            
         
         return (self.audio.set_frame_rate(self.audio.frame_rate))
             
@@ -86,8 +91,8 @@ class editor():
             if "preview.wav" in os.listdir():
                 mixer.music.unload()
                 os.remove("preview.wav")
-            self.change_audio_characts()
-            self.audio.export("preview.wav",format="wav")
+            self.change_audio_characts("display")
+            self.prev_audio.export("preview.wav",format="wav")
             pos_time = mixer.music.get_pos()
             mixer.music.load("preview.wav")
             mixer.music.play()
@@ -159,7 +164,7 @@ class editor():
     def export_audio(self):
         self.stateLabel.configure(text="SAVING FILE")
         try:
-            self.change_audio_characts()
+            self.change_audio_characts("save")
             self.history = self.history+"---->APPLIED AUDIO CHARACTS.\n"
             file = filedialog.asksaveasfilename(initialdir="/",initialfile=self.name,
                     title="SAVE AS",defaultextension="."+self.extension)
