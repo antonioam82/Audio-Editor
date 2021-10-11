@@ -78,7 +78,6 @@ class editor():
         speed = self.slider.get()
         self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
                         ).apply_gain(self.slider2.get())+self.slider1.get()
-        self.history = self.history+"---->APPLIED AUDIO CHARACTS.\n"
         
         return (self.audio.set_frame_rate(self.audio.frame_rate))
             
@@ -161,6 +160,7 @@ class editor():
         self.stateLabel.configure(text="SAVING FILE")
         try:
             self.change_audio_characts()
+            self.history = self.history+"---->APPLIED AUDIO CHARACTS.\n"
             file = filedialog.asksaveasfilename(initialdir="/",initialfile=self.name,
                     title="SAVE AS",defaultextension="."+self.extension)
             if file != "":
