@@ -54,16 +54,17 @@ class editor():
         self.slider2 = Scale(self.root,length=130,bg="gray25",fg="white",from_=50, to=1)
         self.slider2.place(x=437,y=207)
         Label(self.root,text="GAIN",fg="white",bg="gray28").place(x=438,y=180)
-        self.slider3 = Scale(self.root,bg="gray25",fg="white",length=130, from_=500, to=1)
+        self.slider3 = Scale(self.root,bg="gray25",fg="white",length=130, from_=1000, to=1)
         self.slider3.place(x=510,y=207)
         Label(self.root,text="FADE IN",fg="white",bg="gray28").place(x=505,y=180)
-        self.slider4 = Scale(self.root,bg="gray25",fg="white",length=130, from_=500, to=1)
+        self.slider4 = Scale(self.root,bg="gray25",fg="white",length=130, from_=1000, to=1)
         self.slider4.place(x=580,y=207)
         Label(self.root,text="FADE OUT",fg="white",bg="gray28").place(x=570,y=180)
 
         self.root.mainloop()
 
     def open_file(self):
+        self.stateLabel.configure(text="")
         self.audio_file = filedialog.askopenfilename(initialdir = "/",
                      title="Select audio",filetypes = (("mp3 files","*.mp3"),
                      ("wav files","*.wav"),("ogg files","*.ogg"),
@@ -75,6 +76,7 @@ class editor():
             self.import_audio()
 
     def change_audio_characts(self,mode):
+        self.stateLabel.configure(text="")
         speed = self.slider.get()
         if mode == "save":
             self.audio = (self.audio._spawn(self.audio.raw_data, overrides={"frame_rate": int(self.audio.frame_rate * speed)})).fade_out(self.slider4.get()).fade_in(self.slider3.get()
@@ -144,6 +146,7 @@ class editor():
             self.slider3.set(1)
             self.slider1.set(1)
             self.stateLabel.configure(text="RESTORED ORIGINAL AUDIO")
+            
             self.history = self.history+("---->RESTORED ORIGINAL AUDIO.\n")
 
     def init_task(self,ex):
