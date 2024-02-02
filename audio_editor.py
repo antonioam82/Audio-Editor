@@ -119,6 +119,7 @@ class editor():
          mixer.music.stop()
          self.btnPlay.configure(text="PLAY AUDIO")
          self.btnPlay.configure(command=self.play_audio)
+         self.history = self.history+("---->STOPPED PREVIEW AUDIO.\n")
 
 
     def init_task2(self):
@@ -195,7 +196,7 @@ class editor():
                 self.audio = AudioSegment.from_flv(self.audio_file)
             else:
                 self.audio = AudioSegment.from_file(self.audio_file)
-            self.history = self.history+("\n-->LOADED: {}.".format(self.audio_f))+"\n"
+            self.history = self.history+("\n---------------->LOADED: {}.".format(self.audio_f))+"\n"
             self.original_audio = self.audio
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
