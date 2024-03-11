@@ -174,15 +174,19 @@ class editor():
             file = filedialog.asksaveasfilename(initialdir="/",initialfile=self.name,
                     title="SAVE AS",defaultextension="."+self.extension)
             if file != "":
-                self.audio.export(file,format=self.extension)
+                # Convertir el audio a formato estéreo
+                stereo_audio = self.audio.set_channels(2)
+                # Exportar el archivo de audio estéreo
+                stereo_audio.export(file, format=self.extension)
                 file_saved = (file).split("/")[-1]
                 messagebox.showinfo("SAVED FILE","Saved file as: {}.".format(file_saved))
                 self.history = self.history+("---->SAVED FILE AS: {}.".format(file_saved))+"\n"
         except Exception as e:
             messagebox.showwarning("UNEXPECTED ERROR",str(e))
             self.history=self.history+"---->UNEXPECTED ERROR: {}\n".format(str(e))
-            
+        
         self.stateLabel.configure(text="")
+
 
     def import_audio(self):
         try:
